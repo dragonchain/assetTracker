@@ -7,6 +7,7 @@ import 'package:dragonchain_sdk/dragonchain_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
+import 'actions/get_dragonchain_client.dart';
 import 'actions/take_photo.dart';
 
 class AddScreen extends StatefulWidget {
@@ -37,15 +38,12 @@ class AddScreenState extends State<AddScreen> {
   }
 
   _getBarcode() async {
-    String barcode = await BarcodeScanner.scan();
-    return barcode;
-  }
-
-  _getDragonchainClient() async {
-    return DragonchainClient.createClient(
-        dragonchainId: '29xBXnCxpMQso9zhCNsegA13WYtTH24JDedszndt5XTd8',
-        authKey: 'SuzacGlkY9T01PJ89Ha7SjEGoubwoc4Ue29p8SI8jp4',
-        authKeyId: 'HJXOAMYAVUJG');
+    try {
+      String barcode = await BarcodeScanner.scan(); // throws if user exits
+      return barcode;
+    } catch (e) {
+      return '';
+    }
   }
 
   _appendItemHistory() async {
@@ -53,7 +51,7 @@ class AddScreenState extends State<AddScreen> {
     File file = await _getPhotoOfNewItem();
     Position position = await _getCurrentPosition();
     String barcode = await _getBarcode();
-    DragonchainClient dragonchainClient = await _getDragonchainClient();
+    DragonchainClient dragonchainClient = await getDragonchainClient();
     this.setState(() => _isLoading = false);
 
     var response = await dragonchainClient.createTransaction('banana', {
@@ -77,17 +75,16 @@ class AddScreenState extends State<AddScreen> {
           body: new Center(
         child: new Column(
           children: <Widget>[
-            _isLoading
-                ? CircularProgressIndicator()
-                : new Container(
-                    child: new MaterialButton(
-                      color: Color.fromRGBO(0, 1, 1, 0),
+            new Container(
+              child: _isLoading
+                  ? CircularProgressIndicator()
+                  : new RaisedButton(
                       onPressed: _appendItemHistory,
                       child: new Text("Scan a new Item!"),
                       autofocus: true,
                     ),
-                    padding: const EdgeInsets.all(8.0),
-                  ),
+              padding: const EdgeInsets.all(8.0),
+            ),
           ],
         ),
       )),

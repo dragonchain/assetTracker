@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'map_screen.dart';
+
 class ListItemsScreen extends StatefulWidget {
   @override
   ListItemsScreenState createState() => ListItemsScreenState();
@@ -7,7 +9,7 @@ class ListItemsScreen extends StatefulWidget {
 
 class ListItemsScreenState extends State<ListItemsScreen> {
   Future<List<Map<String, String>>> _getItems() async {
-    //TODO: call dragonchain instead of sleep
+    // TODO: call a dragonchain instead of sleeping for 1 second
     await new Future.delayed(const Duration(seconds: 1), () => "1");
 
     return [
@@ -15,9 +17,9 @@ class ListItemsScreenState extends State<ListItemsScreen> {
     ];
   }
 
-  @override
-  void initState() {
-    super.initState();
+  _goToMapView(String barcode) async {
+    var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => MapScreen(barcode: barcode)));
+    return result;
   }
 
   @override
@@ -30,9 +32,10 @@ class ListItemsScreenState extends State<ListItemsScreen> {
                 if (snapshot.hasError) {
                   print(snapshot.error);
                 }
-                var banana = snapshot.data.map((f) => ListTile(leading: Icon(Icons.map), title: Text(f['name']))).toList();
-
-                return new ListView(children: banana);
+                var listTiles = snapshot.data
+                    .map((f) => ListTile(onTap: () async => _goToMapView(f['barcode']), leading: Icon(Icons.map), title: Text(f['name'])))
+                    .toList();
+                return new ListView(children: listTiles);
               }
               return new ListView(children: [ListTile(leading: Icon(Icons.map), title: Text('Nothing Here'))]);
             }));

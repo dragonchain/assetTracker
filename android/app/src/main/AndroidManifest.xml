@@ -6,6 +6,8 @@
          FlutterApplication and put your custom class here. -->
     <uses-permission android:name="android.permission.CAMERA" />
     <application android:name="io.flutter.app.FlutterApplication" android:label="asset_tracker" android:icon="@mipmap/ic_launcher">
+    <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyAnqtC9Mb894G_E8LW6NWjmy1UIivh1H8E"/>
         <activity android:name="com.apptreesoftware.barcodescan.BarcodeScannerActivity"/>
         <activity android:name=".MainActivity" android:launchMode="singleTop" android:theme="@style/LaunchTheme" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize">
             <!-- This keeps the window background of the activity showing

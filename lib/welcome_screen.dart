@@ -17,7 +17,7 @@ class WelcomeScreen extends StatelessWidget {
                 Tab(icon: Icon(Icons.list)),
               ],
             ),
-            title: Text('Tabs Demo'),
+            title: Text('Asset Tracker'),
           ),
           body: TabBarView(
             children: [

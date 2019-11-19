@@ -21,6 +21,7 @@ dependencies:
   dragonchain_sdk:
     path: ../dragonchain-sdk-dart/dragonchain_sdk
   geolocator: ^5.1.5
+  google_maps_flutter: 0.5.21+11
   camera:
   path_provider:
   path:
