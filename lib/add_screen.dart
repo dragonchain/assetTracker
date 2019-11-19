@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:asset_tracker/map_screen_single.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:camera/camera.dart';
 import 'package:dragonchain_sdk/dragonchain_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'actions/get_dragonchain_client.dart';
 import 'actions/take_photo.dart';
@@ -52,9 +54,8 @@ class AddScreenState extends State<AddScreen> {
     Position position = await _getCurrentPosition();
     String barcode = await _getBarcode();
     DragonchainClient dragonchainClient = await getDragonchainClient();
-    this.setState(() => _isLoading = false);
 
-    var response = await dragonchainClient.createTransaction('banana', {
+    var txn = {
       'method': 'append_history',
       'params': {
         'barcode': barcode,
@@ -63,8 +64,14 @@ class AddScreenState extends State<AddScreen> {
         'time': new DateTime.now().toUtc().toIso8601String(),
         'image': base64.encode(file.readAsBytesSync())
       }
-    });
+    };
+    logger.d(txn);
+    var response = await dragonchainClient.createTransaction('banana', txn);
     logger.d(response);
+    this.setState(() => _isLoading = false);
+
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => MapScreenSingle(barcode: barcode, newPoint: LatLng(position.latitude, position.longitude))));
     return response;
   }
 
@@ -77,7 +84,11 @@ class AddScreenState extends State<AddScreen> {
           children: <Widget>[
             new Container(
               child: _isLoading
-                  ? CircularProgressIndicator()
+                  ? Center(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[CircularProgressIndicator()]))
                   : new RaisedButton(
                       onPressed: _appendItemHistory,
                       child: new Text("Scan a new Item!"),

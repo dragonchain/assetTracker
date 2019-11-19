@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'map_screen.dart';
+import 'map_screen_path.dart';
 
 class ListItemsScreen extends StatefulWidget {
   @override
