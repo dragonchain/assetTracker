@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:dragonchain_sdk/dragonchain_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'actions/get_dragonchain_client.dart';
 
 class MapScreen extends StatefulWidget {
   final String barcode;
@@ -14,15 +17,14 @@ class MapScreen extends StatefulWidget {
 class MapSampleState extends State<MapScreen> {
   Completer<GoogleMapController> _controller = Completer();
   final _seattle = LatLng(47.608013, -122.335167);
-  // static final CameraPosition _kLake = CameraPosition(
-  //     bearing: 192.8334901395799, target: LatLng(37.43296265331129, -122.08832357078792), tilt: 59.440717697143555, zoom: 19.151926040649414);
 
   Future<dynamic> _getItems() async {
     // TODO: Actually call a dragonchain.
     // DragonchainClient dragonchainClient = await getDragonchainClient();
-    // dragonchainClient.getSmartContractObject(this.widget.barcode, 'someContractId')
-
+    // Map<String, dynamic> response = await dragonchainClient.getSmartContractObject(this.widget.barcode, smartContractId);
+    // logger.d(response);
     await new Future.delayed(const Duration(seconds: 1), () => "1"); // kill this
+
     var response = [
       {'latitude': 47.608013, 'longitude': -122.335167, 'barcode': 'banana'},
       {'latitude': 47.609024, 'longitude': -122.332154, 'barcode': 'banana'},
@@ -64,7 +66,6 @@ class MapSampleState extends State<MapScreen> {
                 },
               );
             }
-
             return new Container(
                 child: Center(
                     child: Column(

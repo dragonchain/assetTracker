@@ -56,7 +56,7 @@ class AddScreenState extends State<AddScreen> {
     DragonchainClient dragonchainClient = await getDragonchainClient();
 
     var txn = {
-      'method': 'append_history',
+      'method': 'appendItem',
       'params': {
         'barcode': barcode,
         'latitude': position.latitude,
@@ -66,7 +66,7 @@ class AddScreenState extends State<AddScreen> {
       }
     };
     logger.d(txn);
-    var response = await dragonchainClient.createTransaction('banana', txn);
+    var response = await dragonchainClient.createTransaction('assetTracker', txn);
     logger.d(response);
     this.setState(() => _isLoading = false);
 
@@ -81,14 +81,12 @@ class AddScreenState extends State<AddScreen> {
       home: new Scaffold(
           body: new Center(
         child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             new Container(
               child: _isLoading
-                  ? Center(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[CircularProgressIndicator()]))
+                  ? Center(child: Column(children: <Widget>[CircularProgressIndicator()]))
                   : new RaisedButton(
                       onPressed: _appendItemHistory,
                       child: new Text("Scan a new Item!"),
