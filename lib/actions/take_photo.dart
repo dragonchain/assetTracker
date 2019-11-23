@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:developer';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -92,6 +93,7 @@ class TakePhotoScreenState extends State<TakePhotoScreen> {
           } catch (e) {
             // TODO: Create some actual error handling logic.
 
+            log(e);
             // If an error occurs, log the error to the console.
             print(e);
           }
