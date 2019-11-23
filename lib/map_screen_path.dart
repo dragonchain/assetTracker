@@ -20,17 +20,17 @@ class MapSampleState extends State<MapScreen> {
 
   Future<dynamic> _getItems() async {
     // TODO: Actually call a dragonchain.
-    // DragonchainClient dragonchainClient = await getDragonchainClient();
-    // Map<String, dynamic> response = await dragonchainClient.getSmartContractObject(this.widget.barcode, smartContractId);
-    // logger.d(response);
+     DragonchainClient dragonchainClient = await getDragonchainClient();
+     var response = await dragonchainClient.getSmartContractObject(this.widget.barcode, smartContractId);
+     logger.d(response);
     await new Future.delayed(const Duration(seconds: 1), () => "1"); // kill this
 
-    var response = [
-      {'latitude': 47.608013, 'longitude': -122.335167, 'barcode': 'banana'},
-      {'latitude': 47.609024, 'longitude': -122.332154, 'barcode': 'banana'},
-      {'latitude': 47.605015, 'longitude': -122.333173, 'barcode': 'banana'},
-      {'latitude': 47.603036, 'longitude': -122.335181, 'barcode': 'banana'},
-    ];
+//    var response = [
+//      {'latitude': 47.608013, 'longitude': -122.335167, 'barcode': 'banana'},
+//      {'latitude': 47.609024, 'longitude': -122.332154, 'barcode': 'banana'},
+//      {'latitude': 47.605015, 'longitude': -122.333173, 'barcode': 'banana'},
+//      {'latitude': 47.603036, 'longitude': -122.335181, 'barcode': 'banana'},
+//    ];
 
     var polylinePoints = response.map((Map<String, dynamic> point) => LatLng(point['latitude'], point['longitude'])).toList();
     var markers = response

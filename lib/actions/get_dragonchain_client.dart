@@ -2,10 +2,10 @@ import 'package:dragonchain_sdk/dragonchain_sdk.dart';
 
 getDragonchainClient() async {
   return DragonchainClient.createClient(
-      dragonchainId: 'cMDSkmhMo2g6XDG4wFqp3HvPuoKa4nbgHgm6PUxRtkQ2',
-      authKey: 'RuAFZUVnLyylvq7uUHr6gwhlHtUsOtOsR5KzsAxTZkT',
-      authKeyId: 'GUQMWMMYZEZV');
+      dragonchainId: 'bwi8oUzfAKwXWgwCnKHabemnzkvHCFfkUkwgXYMNhmxr',
+      authKey: 'D06Cirbq5D4ZZsk0tPgaiD4vS62fGROLWXM2kTLSl0U',
+      authKeyId: 'JJCUTFCGSUOV');
 }
 
-String smartContractId = '69237036-ee50-4e9c-96af-bee563d245eb';
+String smartContractId = '3355df39-53b6-4d6b-853e-06de8f424238';
 String transactionType = 'assetTracker';
