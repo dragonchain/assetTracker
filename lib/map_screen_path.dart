@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dragonchain_sdk/dragonchain_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'actions/get_dragonchain_client.dart';
+import 'item_details_screen.dart';
 
 class MapScreen extends StatefulWidget {
   final String barcode;
@@ -34,13 +36,20 @@ class MapSampleState extends State<MapScreen> {
 
     var polylinePoints = response.map((Map<String, dynamic> point) => LatLng(point['latitude'], point['longitude'])).toList();
     var markers = response
-        .map((Map<String, dynamic> point) => Marker(markerId: MarkerId(point['barcode']), position: LatLng(point['latitude'], point['longitude'])))
+        .map((Map<String, dynamic> point) => Marker(
+            onTap: () => _goToDetails(point['barcode'], Image.memory(base64Decode(point['image'])), point['transactionId']),
+            markerId: MarkerId(point['barcode']),
+            position: LatLng(point['latitude'], point['longitude'])))
         .toSet();
     Polyline polyline = new Polyline(polylineId: PolylineId(response[0]['barcode']), points: polylinePoints, color: Color.fromRGBO(221, 80, 76, 1));
     return {
       'polylines': [polyline].toSet(),
       'markers': markers
     };
+  }
+
+  _goToDetails(String barcode, Image image, String transactionId) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ItemDetailsScreen(barcode: barcode, transactionId: transactionId, image: image)));
   }
 
   @override
@@ -62,7 +71,9 @@ class MapSampleState extends State<MapScreen> {
                 polylines: snapshot.data['polylines'],
                 markers: snapshot.data['markers'],
                 onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
+                  if (!_controller.isCompleted) {
+                    _controller.complete(controller);
+                  }
                 },
               );
             }

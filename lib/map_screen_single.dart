@@ -26,7 +26,9 @@ class MapSampleState extends State<MapScreenSingle> {
           ),
           markers: [Marker(markerId: MarkerId(this.widget.barcode), position: this.widget.newPoint)].toSet(),
           onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
+            if (!_controller.isCompleted) {
+              _controller.complete(controller);
+            }
           },
         ),
         floatingActionButton: FloatingActionButton.extended(

@@ -12,6 +12,7 @@ module.exports = async input => {
     const { barcode } = params;
     const barcodeRes = await client.getSmartContractObject({ key: barcode });
     const allItems = await client.getSmartContractObject({ key: "allItems" });
+    params.transactionId = input.header.txn_id;
     if (barcodeRes.status === 404) {
       output[barcode] = [params];
     } else {
