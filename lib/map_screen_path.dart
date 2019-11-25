@@ -18,37 +18,72 @@ class MapScreen extends StatefulWidget {
 
 class MapSampleState extends State<MapScreen> {
   Completer<GoogleMapController> _controller = Completer();
-  final _seattle = LatLng(47.608013, -122.335167);
 
   Future<dynamic> _getItems() async {
-    // TODO: Actually call a dragonchain.
-     DragonchainClient dragonchainClient = await getDragonchainClient();
-     var response = await dragonchainClient.getSmartContractObject(this.widget.barcode, smartContractId);
-     logger.d(response);
-    await new Future.delayed(const Duration(seconds: 1), () => "1"); // kill this
-
-//    var response = [
-//      {'latitude': 47.608013, 'longitude': -122.335167, 'barcode': 'banana'},
-//      {'latitude': 47.609024, 'longitude': -122.332154, 'barcode': 'banana'},
-//      {'latitude': 47.605015, 'longitude': -122.333173, 'barcode': 'banana'},
-//      {'latitude': 47.603036, 'longitude': -122.335181, 'barcode': 'banana'},
-//    ];
-
-    var polylinePoints = response.map((Map<String, dynamic> point) => LatLng(point['latitude'], point['longitude'])).toList();
-    var markers = response
-        .map((Map<String, dynamic> point) => Marker(
-            onTap: () => _goToDetails(point['barcode'], Image.memory(base64Decode(point['image'])), point['transactionId']),
-            markerId: MarkerId(point['barcode']),
-            position: LatLng(point['latitude'], point['longitude'])))
-        .toSet();
-    Polyline polyline = new Polyline(polylineId: PolylineId(response[0]['barcode']), points: polylinePoints, color: Color.fromRGBO(221, 80, 76, 1));
+    DragonchainClient dragonchainClient = await getDragonchainClient();
+    var response = await dragonchainClient.getSmartContractObject(this.widget.barcode, smartContractId);
+    logger.d(response);
+    var avgLat = _getAverageFromArrayOfObjects(response, 'latitude');
+    var avgLon = _getAverageFromArrayOfObjects(response, 'longitude');
+    var bounds = _getBoundsFromArrayOfObjects(response);
     return {
-      'polylines': [polyline].toSet(),
-      'markers': markers
+      'polylines': _getPolylinesFromResponse(response),
+      'markers': _getMarkersFromResponse(response),
+      'target': LatLng(avgLat, avgLon),
+      'bounds': CameraTargetBounds(bounds)
     };
   }
 
-  _goToDetails(String barcode, Image image, String transactionId) {
+  _padded(double number) {
+    return number + 0;
+  }
+
+  LatLngBounds _getBoundsFromArrayOfObjects(dynamic response) {
+    double maxLat = response[0]['latitude'];
+    double minLat = response[0]['latitude'];
+    double maxLon = response[0]['longitude'];
+    double minLon = response[0]['longitude'];
+
+    for (var x = 0; x < response.length; x++) {
+      if (response[x]['latitude'] > maxLat) maxLat = response[x]['latitude'];
+      if (response[x]['latitude'] < minLat) minLat = response[x]['latitude'];
+      if (response[x]['longitude'] > maxLon) maxLon = response[x]['longitude'];
+      if (response[x]['longitude'] < minLon) minLon = response[x]['longitude'];
+    }
+    return LatLngBounds(northeast: LatLng(_padded(maxLat), _padded(maxLon)), southwest: LatLng(_padded(minLat), _padded(minLon)));
+  }
+
+  Set<Polyline> _getPolylinesFromResponse(dynamic response) {
+    Color red = Color.fromRGBO(221, 80, 76, 1);
+    List<LatLng> polylinePoints = new List();
+    for (var x = 0; x < response.length; x++) {
+      polylinePoints.add(LatLng(response[x]['latitude'], response[x]['longitude']));
+    }
+    Polyline polyline = new Polyline(
+        startCap: Cap.roundCap, endCap: Cap.roundCap, polylineId: PolylineId(response[0]['barcode']), points: polylinePoints, color: red);
+    return [polyline].toSet();
+  }
+
+  Set<Marker> _getMarkersFromResponse(dynamic response) {
+    Set<Marker> markers = new Set();
+    for (var x = 0; x < response.length; x++) {
+      markers.add(Marker(
+          onTap: () => _goToDetails(response[x]['barcode'], Image.memory(base64Decode(response[x]['image'])), response[x]['transactionId']),
+          markerId: MarkerId(response[x]['transactionId']),
+          position: LatLng(response[x]['latitude'], response[x]['longitude'])));
+    }
+    return markers;
+  }
+
+  double _getAverageFromArrayOfObjects(List<dynamic> response, String label) {
+    double number = 0;
+    for (var x = 0; x < response.length; x++) {
+      number = number + response[x][label];
+    }
+    return number / response.length;
+  }
+
+  void _goToDetails(String barcode, Image image, String transactionId) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => ItemDetailsScreen(barcode: barcode, transactionId: transactionId, image: image)));
   }
 
@@ -62,11 +97,12 @@ class MapSampleState extends State<MapScreen> {
               if (snapshot.hasError) {
                 print(snapshot.error);
               }
+
               return GoogleMap(
                 mapType: MapType.hybrid,
                 initialCameraPosition: CameraPosition(
-                  target: _seattle,
-                  zoom: 14.4746,
+                  target: snapshot.data['target'],
+                  zoom: 10.0, // TODO: use math for this...
                 ),
                 polylines: snapshot.data['polylines'],
                 markers: snapshot.data['markers'],

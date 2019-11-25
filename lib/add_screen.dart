@@ -28,13 +28,13 @@ class AddScreenState extends State<AddScreen> {
     super.initState();
   }
 
-  _getPhotoOfNewItem() async {
+  Future<File> _getPhotoOfNewItem() async {
     final camera = (await availableCameras()).first;
-    final result = Navigator.push(context, MaterialPageRoute(builder: (context) => TakePhotoScreen(camera: camera)));
-    return result;
+    final File file = await Navigator.push(context, MaterialPageRoute(builder: (context) => TakePhotoScreen(camera: camera)));
+    return file;
   }
 
-  _getCurrentPosition() async {
+  Future<Position> _getCurrentPosition() async {
     Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     return position;
   }
