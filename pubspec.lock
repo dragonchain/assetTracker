@@ -67,10 +67,10 @@ packages:
   dragonchain_sdk:
     dependency: "direct main"
     description:
-      path: "../dragonchain-sdk-dart/dragonchain_sdk"
-      relative: true
-    source: path
-    version: "0.0.1"
+      name: dragonchain_sdk
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.3"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -136,7 +136,7 @@ packages:
       name: logger
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.0"
+    version: "0.7.0+2"
   matcher:
     dependency: transitive
     description:

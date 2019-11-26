@@ -18,8 +18,7 @@ environment:
 
 dependencies:
   barcode_scan: ^1.0.0
-  dragonchain_sdk:
-    path: ../dragonchain-sdk-dart/dragonchain_sdk
+  dragonchain_sdk: ^0.0.3
   geolocator: ^5.1.5
   google_maps_flutter: 0.5.21+11
   camera:

@@ -10,7 +10,6 @@ class ListItemsScreen extends StatefulWidget {
 }
 
 class ListItemsScreenState extends State<ListItemsScreen> {
-  //
   Future<List<dynamic>> _getItems() async {
     DragonchainClient dragonchainClient = await getDragonchainClient();
     var response = await dragonchainClient.getSmartContractObject('allItems', smartContractId);
